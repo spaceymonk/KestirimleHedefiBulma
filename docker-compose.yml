@@ -6,24 +6,77 @@ services:
   zookeeper:
     image: wurstmeister/zookeeper
     container_name: zookeeper
-    ports:
-      - "2181:2181"
+    expose:
+      - "2181"
     networks:
       - khb_network
 
   kafka:
     image: wurstmeister/kafka
     container_name: kafka
-    ports:
-      - "9092:9092"
+    depends_on:
+      - zookeeper
+    expose:
+      - "9092"
     environment:
-      KAFKA_ADVERTISED_HOST_NAME: localhost
+      KAFKA_ADVERTISED_HOST_NAME: kafka
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_CREATE_TOPICS: "khb-sensor:1:1,khb-sensor-data:1:1"
     networks:
-      - khb_network    
+      - khb_network
+  
+  central-unit:
+    image: spaceymonk/central-unit:1.0.0
+    build: ./CentralUnit
+    container_name: central-unit
+    depends_on:
+      - kafka
+    command: "java -jar app.jar"
+    ports:
+      - "8080:8080"
+    networks:
+      - khb_network
+    environment:
+      SPRING_APPLICATION_JSON: '{
+          "spring.kafka.bootstrap-servers"  : "kafka:9092"
+        }'
 
+  sensor-app-1:
+    image: spaceymonk/sensor-app:1.0.0
+    build: ./SensorApp
+    container_name: sensor-app-1
+    depends_on:
+      - kafka
+    command: "java -jar app.jar"
+    networks:
+      - khb_network
+    environment:
+      SPRING_APPLICATION_JSON: '{
+          "spring.kafka.bootstrap-servers"  : "kafka:9092",
+          "app.sensor.location.x" : "-5",
+          "app.sensor.location.y" : "1",
+          "app.target.location.x" : "-1",
+          "app.target.location.y" : "5"
+        }'
+
+  sensor-app-2:
+    image: spaceymonk/sensor-app:1.0.0
+    build: ./SensorApp
+    container_name: sensor-app-2
+    depends_on:
+      - kafka
+    command: "java -jar app.jar"
+    networks:
+      - khb_network
+    environment:
+      SPRING_APPLICATION_JSON: '{
+          "spring.kafka.bootstrap-servers"  : "kafka:9092",
+          "app.sensor.location.x" : "5",
+          "app.sensor.location.y" : "-1",
+          "app.target.location.x" : "-1",
+          "app.target.location.y" : "5"
+        }'
 
 networks:
   khb_network:
-    driver: bridge
+    # driver: bridge
