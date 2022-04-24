@@ -12,13 +12,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class SensorServiceImpl implements SensorService {
-    private final Map<UUID, Sensor> sensorMap = new HashMap<>();
+    private static final Map<UUID, Sensor> SENSOR_MAP = new HashMap<>();
 
     @Override
     public void save(SensorDto sensorDto) {
@@ -27,7 +26,7 @@ public class SensorServiceImpl implements SensorService {
                 .createdAt(sensorDto.getTimestamp())
                 .location(new Location2D(sensorDto.getLocationX(), sensorDto.getLocationY()))
                 .build();
-        sensorMap.put(sensorDto.getSensorId(), sensor);
+        SENSOR_MAP.put(sensorDto.getSensorId(), sensor);
     }
 
     @Override
@@ -38,16 +37,16 @@ public class SensorServiceImpl implements SensorService {
         }
         sensor.setFoundAt(sensorDataDto.getTimestamp());
         sensor.setTargetAngle(sensorDataDto.getAngle());
-        sensorMap.put(sensor.getId(), sensor);
+        SENSOR_MAP.put(sensor.getId(), sensor);
     }
 
     @Override
     public Sensor findById(UUID id) {
-        return sensorMap.get(id);
+        return SENSOR_MAP.get(id);
     }
 
     @Override
     public List<Sensor> findAll() {
-        return new ArrayList<>(sensorMap.values());
+        return new ArrayList<>(SENSOR_MAP.values());
     }
 }
