@@ -39,7 +39,7 @@ public class SensorServiceImpl implements SensorService {
     @Override
     public SensorDataDto scan(Location2D targetLoc) {
         double opposite = targetLoc.getY() - SENSOR.getLocation().getY();
-        double adjacent = targetLoc.getX() - SENSOR.getLocation().getY();
+        double adjacent = targetLoc.getX() - SENSOR.getLocation().getX();
         double angle = Math.atan(opposite / adjacent);
         return SensorDataDto.builder()
                 .sensorId(SENSOR.getId())
