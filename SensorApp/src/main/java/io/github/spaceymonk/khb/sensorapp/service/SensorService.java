@@ -6,5 +6,6 @@ import io.github.spaceymonk.khb.sensorapp.model.Location2D;
 
 public interface SensorService {
     SensorDto getSensor();
+
     SensorDataDto scan(Location2D targetLoc);
 }

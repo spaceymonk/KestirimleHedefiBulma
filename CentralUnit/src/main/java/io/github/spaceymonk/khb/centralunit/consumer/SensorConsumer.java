@@ -1,7 +1,6 @@
 package io.github.spaceymonk.khb.centralunit.consumer;
 
 import io.github.spaceymonk.khb.centralunit.dto.SensorDto;
-import io.github.spaceymonk.khb.centralunit.service.CentralUnitService;
 import io.github.spaceymonk.khb.centralunit.service.SensorService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

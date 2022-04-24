@@ -13,10 +13,9 @@ import org.springframework.util.concurrent.ListenableFuture;
 @RequiredArgsConstructor
 public class SensorDataProducer {
 
+    private final KafkaTemplate<String, SensorDataDto> kafkaTemplate;
     @Value("${app.kafka.topic.sensor_data.name}")
     private String topicName;
-
-    private final KafkaTemplate<String, SensorDataDto> kafkaTemplate;
 
     public void sendMessage(SensorDataDto sensorData) {
         ListenableFuture<SendResult<String, SensorDataDto>> future = kafkaTemplate.send(topicName, sensorData);

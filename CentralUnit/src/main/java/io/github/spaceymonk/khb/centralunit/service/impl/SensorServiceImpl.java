@@ -2,8 +2,6 @@ package io.github.spaceymonk.khb.centralunit.service.impl;
 
 import io.github.spaceymonk.khb.centralunit.dto.SensorDataDto;
 import io.github.spaceymonk.khb.centralunit.dto.SensorDto;
-import io.github.spaceymonk.khb.centralunit.exception.InvalidSensorException;
-import io.github.spaceymonk.khb.centralunit.exception.SensorError;
 import io.github.spaceymonk.khb.centralunit.model.Location2D;
 import io.github.spaceymonk.khb.centralunit.model.Sensor;
 import io.github.spaceymonk.khb.centralunit.service.SensorService;

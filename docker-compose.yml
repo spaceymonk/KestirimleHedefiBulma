@@ -79,4 +79,4 @@ services:
 
 networks:
   khb_network:
-    # driver: bridge
+    driver: bridge

@@ -9,7 +9,10 @@ import java.util.UUID;
 
 public interface SensorService {
     void save(SensorDto sensorDto);
+
     void updateData(SensorDataDto sensorDataDto);
+
     Sensor findById(UUID id);
+
     List<Sensor> findAll();
 }

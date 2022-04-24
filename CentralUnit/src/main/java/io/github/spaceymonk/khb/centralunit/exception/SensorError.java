@@ -5,13 +5,12 @@ public enum SensorError implements Error {
     MISSING_SENSOR_DATA("Sensor did not registered any information!", "202");
 
 
+    private final String errorMessage;
+    private final String errorCode;
     SensorError(String errorMessage, String errorCode) {
         this.errorMessage = errorMessage;
         this.errorCode = errorCode;
     }
-
-    private final String errorMessage;
-    private final String errorCode;
 
     @Override
     public String getErrorMessage() {
