@@ -18,6 +18,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class SensorServiceImpl implements SensorService {
     private static final Map<UUID, Sensor> SENSOR_MAP = new HashMap<>();
+    private static final Map<UUID, SensorDataDto> DANGLING_DATA = new HashMap<>();
 
     @Override
     public void save(SensorDto sensorDto) {
@@ -26,6 +27,11 @@ public class SensorServiceImpl implements SensorService {
                 .createdAt(sensorDto.getTimestamp())
                 .location(new Location2D(sensorDto.getLocationX(), sensorDto.getLocationY()))
                 .build();
+        if (DANGLING_DATA.containsKey(sensorDto.getSensorId())) {
+            final SensorDataDto sensorDataDto = DANGLING_DATA.remove(sensorDto.getSensorId());
+            sensor.setFoundAt(sensorDataDto.getTimestamp());
+            sensor.setTargetAngle(sensorDataDto.getAngle());
+        }
         SENSOR_MAP.put(sensorDto.getSensorId(), sensor);
     }
 
@@ -33,7 +39,10 @@ public class SensorServiceImpl implements SensorService {
     public void updateData(SensorDataDto sensorDataDto) {
         final Sensor sensor = findById(sensorDataDto.getSensorId());
         if (sensor == null) {
-            throw new InvalidSensorException(SensorError.INVALID_SENSOR_ACCESS, sensorDataDto.getSensorId());
+//            throw new InvalidSensorException(SensorError.INVALID_SENSOR_ACCESS, sensorDataDto.getSensorId());
+            log.warn("Sensor data arrived before sensor itself. Saving incoming data for further use.");
+            DANGLING_DATA.put(sensorDataDto.getSensorId(), sensorDataDto);
+            return;
         }
         sensor.setFoundAt(sensorDataDto.getTimestamp());
         sensor.setTargetAngle(sensorDataDto.getAngle());
